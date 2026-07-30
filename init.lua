@@ -111,6 +111,7 @@ do
   -- You can also add relative line numbers, to help with jumping.
   --  Experiment for yourself to see if you like it!
   -- vim.o.relativenumber = true
+  vim.o.relativenumber = true
 
   -- Enable mouse mode, can be useful for resizing splits for example!
   vim.o.mouse = 'a'
@@ -343,6 +344,8 @@ do
   --
   -- We first install it from https://github.com/NMAC427/guess-indent.nvim
   -- and then call its `setup()` function to start it with default settings.
+  vim.pack.add { 'https://codeberg.org/mfussenegger/nvim-ansible.git' }
+
   vim.pack.add { gh 'NMAC427/guess-indent.nvim' }
   require('guess-indent').setup {}
 
@@ -389,11 +392,14 @@ do
       comments = { italic = false }, -- Disable italics in comments
     },
   }
+  vim.pack.add { gh 'calind/selenized.nvim' }
+  -- require('selenized').setup {}
 
   -- Load the colorscheme here.
   -- Like many other themes, this one has different styles, and you could load
   -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  vim.cmd.colorscheme 'tokyonight-night'
+  -- vim.cmd.colorscheme 'tokyonight-night'
+  vim.cmd.colorscheme 'selenized'
 
   -- Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }
@@ -692,6 +698,15 @@ do
   --  See `:help lsp-config` for information about keys and how to configure
   ---@type table<string, vim.lsp.Config>
   local servers = {
+    gopls = {},
+    basedpyright = {
+      settings = {
+        basedpyright = {
+          typeCheckingMode = 'basic',
+        },
+      },
+    },
+    bashls = {},
     -- clangd = {},
     -- gopls = {},
     -- pyright = {},
@@ -702,6 +717,28 @@ do
     --
     -- But for many setups, the LSP (`ts_ls`) will work just fine
     -- ts_ls = {},
+    ansiblels = {
+      cmd = { '/home/cramerd/node_modules/.bin/ansible-language-server', '--stdio' },
+      settings = {
+        ansible = {
+          python = { interpreterPath = 'python' },
+          ansible = { path = 'ansible' },
+          executionEnvironment = { enabled = false },
+          validation = {
+            enabled = false,
+            lint = {
+              enabled = true,
+              path = 'ansible-lint',
+              arguments = { '--profile moderate', '--fix=yaml', '-f codeclimate', '--offline' },
+              autoFixOnSave = true,
+            },
+          },
+        },
+      },
+      filetypes = { 'yaml.ansible' },
+      root_markers = { 'ansible.cfg', 'roles', 'playbooks' },
+      single_file_support = true,
+    },
 
     stylua = {}, -- Used to format Lua code
 
@@ -792,7 +829,7 @@ do
         -- python = true,
       }
       if enabled_filetypes[vim.bo[bufnr].filetype] then
-        return { timeout_ms = 500 }
+        return { timeout_ms = 5000 }
       else
         return nil
       end
@@ -802,6 +839,13 @@ do
     },
     -- You can also specify external formatters in here.
     formatters_by_ft = {
+      lua = { 'stylua' },
+      python = { 'ruff_organize_imports', 'ruff_format' },
+      go = { 'gofmt' },
+      sh = { 'shfmt', 'shellcheck' },
+      ksh = { 'shfmt', 'shellcheck' },
+      bash = { 'shfmt', 'shellcheck' },
+      ansible = { 'ansible-lint', inherit = true, prepend_args = { '--profile moderate', '--offline' } },
       -- rust = { 'rustfmt' },
       -- Conform can also run multiple formatters sequentially
       -- python = { "isort", "black" },
@@ -889,7 +933,7 @@ do
     -- the rust implementation via `'prefer_rust_with_warning'`
     --
     -- See `:help blink-cmp-config-fuzzy` for more information
-    fuzzy = { implementation = 'lua' },
+    fuzzy = { implementation = 'prefer_rust_with_warning' },
 
     -- Shows a signature help window while you type arguments for a function
     signature = { enabled = true },
@@ -910,7 +954,8 @@ do
   vim.pack.add { { src = gh 'nvim-treesitter/nvim-treesitter', version = 'main' } }
 
   -- Ensure basic parsers are installed
-  local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+  local parsers =
+    { 'bash', 'c', 'diff', 'go', 'html', 'lua', 'luadoc', 'jinja', 'jinja_inline', 'markdown', 'markdown_inline', 'python', 'query', 'vim', 'vimdoc', 'yaml' }
   require('nvim-treesitter').install(parsers)
 
   ---@param buf integer
@@ -975,9 +1020,9 @@ do
   -- require 'kickstart.plugins.debug'
   -- require 'kickstart.plugins.indent_line'
   -- require 'kickstart.plugins.lint'
-  -- require 'kickstart.plugins.autopairs'
+  require 'kickstart.plugins.autopairs'
   -- require 'kickstart.plugins.neo-tree'
-  -- require 'kickstart.plugins.gitsigns' -- adds gitsigns recommended keymaps
+  require 'kickstart.plugins.gitsigns' -- adds gitsigns recommended keymaps
 
   -- NOTE: You can add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --
