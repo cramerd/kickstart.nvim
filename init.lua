@@ -722,28 +722,7 @@ do
     --
     -- But for many setups, the LSP (`ts_ls`) will work just fine
     -- ts_ls = {},
-    ansiblels = {
-      cmd = { '/home/cramerd/node_modules/.bin/ansible-language-server', '--stdio' },
-      settings = {
-        ansible = {
-          python = { interpreterPath = 'python' },
-          ansible = { path = 'ansible' },
-          executionEnvironment = { enabled = false },
-          validation = {
-            enabled = false,
-            lint = {
-              enabled = true,
-              path = 'ansible-lint',
-              arguments = { '--profile moderate', '--fix=yaml', '-f codeclimate', '--offline' },
-              autoFixOnSave = true,
-            },
-          },
-        },
-      },
-      filetypes = { 'yaml.ansible' },
-      root_markers = { 'ansible.cfg', 'roles', 'playbooks' },
-      single_file_support = true,
-    },
+    ansiblels = {},
 
     stylua = {}, -- Used to format Lua code
 
