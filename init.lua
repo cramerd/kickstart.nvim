@@ -711,7 +711,7 @@ do
         },
       },
     },
-    bashls = {},
+    -- bashls = {},
     -- clangd = {},
     -- gopls = {},
     -- pyright = {},
@@ -795,6 +795,15 @@ do
     vim.lsp.config(name, server)
     vim.lsp.enable(name)
   end
+  -- Bash language server bashd (https://github.com/matkrin/bashd)
+  -- Not in Mason yet (2026-08-03)
+  vim.lsp.config.bashd = {
+    cmd = { 'bashd' },
+    filetypes = { 'bash', 'sh' },
+    root_markers = { '.git' },
+  }
+
+  vim.lsp.enable 'bashd'
 end
 
 -- ============================================================
