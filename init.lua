@@ -785,6 +785,7 @@ do
   vim.list_extend(ensure_installed, {
     -- You can add other tools here that you want Mason to install
     'ansible-lint',
+    'yamlfix',
     'shfmt',
     'jinja-lsp',
     'ruff'
@@ -839,7 +840,8 @@ do
       sh = { 'shfmt', 'shellcheck' },
       ksh = { 'shfmt', 'shellcheck' },
       bash = { 'shfmt', 'shellcheck' },
-      ansible = { 'ansible-lint', inherit = true, prepend_args = { '--profile moderate', '--offline' } },
+      yaml = { 'yamlfix' },
+      ansible = { 'ansible-lint', inherit = true, prepend_args = { '--profile moderate' } },
       -- rust = { 'rustfmt' },
       -- Conform can also run multiple formatters sequentially
       -- python = { "isort", "black" },
