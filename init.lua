@@ -788,6 +788,8 @@ do
     'yamlfix',
     'shfmt',
     'jinja-lsp',
+    'shellcheck',
+    'tree-sitter-cli',
     'ruff'
   })
 
@@ -800,7 +802,7 @@ do
   -- Bash language server bashd (https://github.com/matkrin/bashd)
   -- Not in Mason yet (2026-08-03)
   vim.lsp.config.bashd = {
-    cmd = { 'bashd' },
+    cmd = { '/home/cramerd/go/bin/bashd' },
     filetypes = { 'bash', 'sh' },
     root_markers = { '.git' },
   }
