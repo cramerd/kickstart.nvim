@@ -789,7 +789,6 @@ do
     'shfmt',
     'jinja-lsp',
     'shellcheck',
-    'tree-sitter-cli',
     'ruff'
   })
 
@@ -801,6 +800,8 @@ do
   end
   -- Bash language server bashd (https://github.com/matkrin/bashd)
   -- Not in Mason yet (2026-08-03)
+  -- Needs to be installed manually:
+  -- go install github.com/matkrin/bashd/cmd/bashd@latest
   vim.lsp.config.bashd = {
     cmd = { '/home/cramerd/go/bin/bashd' },
     filetypes = { 'bash', 'sh' },
